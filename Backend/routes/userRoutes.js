@@ -3,10 +3,8 @@ const { UserModel } = require("../model/userModel");
 const bcrpyt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PassCheck } = require("../middleware/validate");
-const cookieParser = require("cookie-parser")
+const { BListModel } = require("../model/blackList");
 const UserRouter = express.Router();
-
-UserRouter.use(cookieParser());
 
 UserRouter.post("/register", PassCheck, async (req, res) => {
   const { pass, email } = req.body;
@@ -37,13 +35,18 @@ UserRouter.post("/login", async (req, res) => {
   try {
     const user = await UserModel.findOne({ email });
     if (user) {
-      bcrpyt.compare(pass, user.pass, (err, result) => {
+      bcrpyt.compare(pass, user.pass, async (err, result) => {
         if (result) {
           const token = jwt.sign(
             { userId: user._id, user: user.username },
-            "masai"
+            "masai",
+            { expiresIn: "2d" }
           );
           res.send({ msg: "Login Successfull", token });
+          setTimeout(async () => {
+            const Blist = new BListModel({ token });
+            await Blist.save();
+          }, 1000 * 60 * 10);
         } else {
           res.send({ msg: "Wrong Credentials" });
         }
@@ -56,13 +59,24 @@ UserRouter.post("/login", async (req, res) => {
   }
 });
 
-UserRouter.get("/logout", (req, res)=>{
-  res.clearCookie("token")
-  // res.cookie("token", "", { path: '/' });
-  // res.redirect("/login");
- res.send("logout Successfully")
+UserRouter.post("/logout", async (req, res) => {
+  const { token } = req.body;
 
-})
+
+  try {
+    if(token){
+      const Blist = new BListModel({ token });
+      await Blist.save();
+      res.send('Logged out Successfully')
+    }
+    else{
+      res.send("Token is undefined")
+    }
+  } catch (error) {
+    res.send(error)
+  }
+ 
+});
 
 module.exports = {
   UserRouter,

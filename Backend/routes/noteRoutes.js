@@ -17,8 +17,8 @@ NotesRouter.post("/create", async (req, res) => {
 });
 
 NotesRouter.get("/", async (req, res) => {
-  try { 
-    const notes = await NotesModel.find({userId: req.body.userId});
+  try {
+    const notes = await NotesModel.find({ userId: req.body.userId });
     if (notes) {
       res.send(notes);
     } else {
@@ -31,9 +31,9 @@ NotesRouter.get("/", async (req, res) => {
 
 NotesRouter.patch("/update/:note_id", async (req, res) => {
   const { note_id } = req.params;
-  const note = await NotesModel.find({ _id: note_id });
+  const note = await NotesModel.find({ _id: note_id, userId: req.body.userId });
   try {
-    if (req.body.userId !== note.userId) {
+    if (!note) {
       res.send("You are not Authorized");
     } else {
       await NotesModel.findByIdAndUpdate({ _id: note_id }, req.body);
@@ -46,9 +46,9 @@ NotesRouter.patch("/update/:note_id", async (req, res) => {
 
 NotesRouter.delete("/delete/:note_id", async (req, res) => {
   const { note_id } = req.params;
-  const note = await NotesModel.find({ _id: note_id });
+  const note = await NotesModel.find({ _id: note_id, userId: req.body.userId });
   try {
-    if (req.body.userId !== note.userId) {
+    if (!note) {
       res.send("You are not Authorized");
     } else {
       await NotesModel.findByIdAndDelete({ _id: note_id });

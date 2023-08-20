@@ -1,16 +1,19 @@
 const jwt = require("jsonwebtoken");
+const { BListModel } = require("../model/blackList");
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
-  if (token) {
+
+  const bLlist = await BListModel.findOne({ token });
+
+  if (!bLlist && token) {
     jwt.verify(token, "masai", (err, decoded) => {
       if (decoded) {
         req.body.userId = decoded.userId;
         req.body.user = decoded.user;
         next();
-      }
-      else{
-        res.send("UnAuthorized")
+      } else {
+        res.send("UnAuthorized");
       }
     });
   } else {
