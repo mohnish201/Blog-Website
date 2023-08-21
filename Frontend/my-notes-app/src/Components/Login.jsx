@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useCookies } from 'react-cookie';
+import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import {
   Box,
   Button,
@@ -12,14 +12,22 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { store } from "../Redux/store";
+import { login } from "../Redux/authReducer/action";
+import { AUTH_ERROR, AUTH_SUCCESS } from "../Redux/actionTypes";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const [cookies, setCookie] = useCookies("token")
+  const [cookies, setCookie] = useCookies("token");
   const toast = useToast();
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  // const token = useSelector((store) => store.authReducer.token);
+  // const isAuth = useSelector((store) => store.authReducer.isAuth);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -27,36 +35,40 @@ const Login = () => {
       email,
       pass,
     };
-    axios
-      .post("http://localhost:4000/users/login", user)
-      .then((res) =>{ console.log(res.data.msg)
-        
-      setCookie("token", res.data.token, { path: '/' });
-      res.data.msg == "Wrong Credentials" ?
-      toast({
-        title: "Wrong Credentials.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      }) : toast({
-        title: 'Login Successfull.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      } ,)  }
+    dispatch(login(user))
+      .then((res) => {
+        dispatch({
+          type: AUTH_SUCCESS,
+          payload: [res.data.token, res.data.username],
+        });
+        setCookie("token", res.data.token, { path: "/" });
+        console.log(res.data);
 
-      
-      )
-      .catch((err) => console.log(err));
-   
-      setEmail("")
-      setPass("")
-
-      navigate("/")
+        res.data.msg == "Login Successfull"
+          ? (toast({
+              title: "Login Successfull.",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            }),
+            navigate("/notes"))
+          : toast({
+              title: "Wrong Credentials.",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            });
+      })
+      .catch((err) => {
+        dispatch({ type: AUTH_ERROR });
+        toast({
+          title: "Wrong Credentials.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
   };
-
-
- 
 
   return (
     <Box
@@ -91,6 +103,7 @@ const Login = () => {
             variant="filled"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Your Email"
+            id="email"
             size={"sm"}
             w="xs"
           />
@@ -104,6 +117,7 @@ const Login = () => {
             variant="filled"
             onChange={(e) => setPass(e.target.value)}
             placeholder="Enter Your Password"
+            id="password"
             size={"sm"}
             w="xs"
           />
@@ -114,7 +128,7 @@ const Login = () => {
             type="submit"
             colorScheme={"messenger"}
           >
-           Login
+            Login
           </Button>
         </FormControl>
       </form>

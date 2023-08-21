@@ -12,57 +12,36 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Add_Notes from "./Add_Notes";
 import add from "../assets/add.png";
+import Single_Note from "./Single_Note";
+import { useDispatch, useSelector } from "react-redux";
+import { store } from "../Redux/store";
+import { getNotes } from "../Redux/notesReducer/action";
+import { NOTES_ERROR, NOTES_FETCHING } from "../Redux/actionTypes";
+import { useNavigate } from "react-router-dom";
 
 const AllNotes = () => {
-  const [notes, setNotes] = useState([]);
-  const [show, setShow] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
 
-  const handleAdd = () => {
-    setShow(!show);
-  };
+  const dispatch = useDispatch();
+  const notes = useSelector((store) => store.notesReducer.notes);
+  const isAuth = useSelector((store) => store.authReducer.isAuth);
+  const loading = useSelector((store) => store.notesReducer.loading);
 
-  const getRandomColor = () => {
-    const colors = [
-      "#FFF3DA",
-      "#FFD1DA",
-      "#A7ECEE",
-      "#FEFF86",
-      "#A5F1E9",
-      "#E3ACF9",
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
+  const token = document.cookie?.split("=")[1];
+  useEffect(() => {
+    dispatch(getNotes(token));
+  }, []);
 
-  const getNotes = () => {
-    axios
-      .get("http://localhost:4000/notes", {
-        headers: {
-          Authorization: `Bearer ${document.cookie.split("=")[1]}`,
-        },
-      })
-      .then((res) => {
-        setNotes(res.data);
-        console.log(res.data);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const deleteNotes=(id) => {
-    console.log(id)
-    console.log(document.cookie?.split('=')[1])
-    axios.delete(`http://localhost:4000/notes/delete/${id}`, {
-        headers:{
-            Authorization:`Bearer ${document.cookie?.split('=')[1]}`
-        }
-    })
-    .then((res) => console.log(res.data))
-    .catch((err) => console.log(err))
+  if (!isAuth) {
+    return navigate("/login");
   }
 
-  useEffect(() => {
-    getNotes();
-  }, []);
+  if (loading) {
+    return <Heading>Loading...</Heading>;
+  } else if (!notes || notes.length===0) {
+    return <Heading>No Notes are created</Heading>;
+  }
 
   return (
     <Box w="100%">
@@ -75,35 +54,11 @@ const AllNotes = () => {
         boxSizing="border-box"
         alignItems={"flex-start"}
         gap="20px"
-        // border={"2px solid black"}
       >
         {notes.map((el) => (
-          <Box
-            key={el._id}
-            // border="2px solid black"
-            boxSizing="border-box"
-            p="20px"
-            maxWidth={"250px"}
-            maxHeight={"400px"}
-            overflow="auto"
-            borderRadius={"15px"}
-            backgroundColor={getRandomColor()}
-            
-            
-          >
-            <Heading fontSize={"17px"} mb="10px">
-              {el.title}
-            </Heading>
-            
-            <Button onClick={() => deleteNotes(el._id)} fontSize={"12px"} position={"absolute"} top="10px" left="190px" size={"xxs"} mixBlendMode="darken">❌</Button>
-
-            {/* <Divider w="100%" h="1px" mb="10px" color={"black"} bgColor="black" /> */}
-            <Text>{el.body}</Text>
-          </Box>
+          <Single_Note key={el._id} {...el} />
         ))}
       </Grid>
-
-      
     </Box>
   );
 };

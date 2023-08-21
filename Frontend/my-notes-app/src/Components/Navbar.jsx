@@ -1,33 +1,34 @@
-import React, {useEffect} from "react";
-import { Box, Button, Image, HStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import { Box, Button, Image, HStack, Heading } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../Redux/authReducer/action";
+import { LOGOUT } from "../Redux/actionTypes";
 const Navbar = () => {
-  let token = document.cookie?.split('=')[1]
-  const navigate = useNavigate()
+  const [cookie, setCookie] = useCookies("token");
+  const navigate = useNavigate();
+  const isAuth = useSelector((store) => store.authReducer.isAuth);
+  const username = useSelector((store) => store.authReducer.username);
 
-  const handleLogout=()=>{
-     axios.get("http://localhost:4000/users/logout")
-     .then((res)=> {console.log(res.data)
-     navigate("/login")
-    })
-     .catch((err) => console.log(err))
-  }
+ 
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 0;
-      setShouldElevate(isScrolled);
-    };
+  const dispatch = useDispatch();
 
-    
+  const handleLogout = () => {
+    let token = document.cookie?.split("=")[1];
 
-    window.addEventListener("scroll", handleScroll);
+    dispatch(logout(token))
+      .then((res) => {
+        console.log(res.data);
+        dispatch({ type: LOGOUT });
+        navigate("/login");
+        setCookie("token", "", { path: "/" });
+      })
+      .catch((err) => console.log(err));
+  };
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   return (
     <Box
       display={"flex"}
@@ -42,8 +43,6 @@ const Navbar = () => {
       position="sticky"
       top={0}
       zIndex="sticky"
-      
-
     >
       <Box display={"flex"} alignItems="center" gap="40px">
         <Image
@@ -53,25 +52,30 @@ const Navbar = () => {
           src="https://play-lh.googleusercontent.com/36szRvmqeewn6fxpx9V88zhpPU3c84Im9zjAFPZl-cReiztnAD6cn0jSnWBGsNNdPsU"
         />
         <Link to="/">
-          <Button  size={"sm"}>
-            Home
-          </Button>
+          <Button size={"sm"}>Home</Button>
         </Link>
       </Box>
 
       <HStack spacing={"60px"}>
-        <Link to="/register">
-          <Button colorScheme={"whiteAlpha"} size={"sm"}>
-            Register
-          </Button>
-        </Link>
-        <Link to="/login">
-          <Button size={"sm"}>Login</Button>
-        </Link>
+        {!isAuth ? (
+          <Link to="/register">
+            <Button colorScheme={"whiteAlpha"} size={"sm"}>
+              Register
+            </Button>
+          </Link>
+        ) : (
+          <Heading fontSize={"15px"}>{`Welcome ${username}`}</Heading>
+        )}
 
-       
-          <Button onClick={handleLogout} size={"sm"}>Logout</Button>
-        
+        {isAuth ? (
+          <Button onClick={handleLogout} size={"sm"}>
+            Logout
+          </Button>
+        ) : (
+          <Link to="/login">
+            <Button size={"sm"}>Login</Button>
+          </Link>
+        )}
       </HStack>
     </Box>
   );

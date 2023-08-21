@@ -20,11 +20,16 @@ import {
 import axios from "axios";
 import { easeOut } from "framer-motion";
 import React, { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import add from "../assets/add.png";
+import { NOTES_POST_ERROR, NOTES_POST_SUCCESS } from "../Redux/actionTypes";
+import { createNotes, EditNotes } from "../Redux/notesReducer/action";
 
 const Add_Notes = ({ getNotes }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+
+  const dispatch = useDispatch();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -32,21 +37,19 @@ const Add_Notes = ({ getNotes }) => {
   const finalRef = React.useRef(null);
 
   const toast = useToast();
+  const token = document.cookie?.split("=")[1];
+
 
   const addNotes = () => {
     const newNote = {
       title,
       body,
     };
-
-    if ((title)) {
-      axios
-        .post("http://localhost:4000/notes/create", newNote, {
-          headers: {
-            Authorization: `Bearer ${document.cookie?.split("=")[1]}`,
-          },
-        })
+    if (title) {
+      dispatch(createNotes(newNote))
         .then((res) => {
+          console.log(res.data);
+          dispatch({ type: NOTES_POST_SUCCESS });
           toast({
             title: "Note Created.",
             description: "We've created Note for you.",
@@ -54,23 +57,23 @@ const Add_Notes = ({ getNotes }) => {
             duration: 5000,
             isClosable: true,
           });
-          getNotes();
-          setBody("");
-          setTitle("");
-          console.log(res.data);
+
+          dispatch(getNotes(token))
         })
-        .catch((err) => console.log(err));
-    }
-    else{
-        toast({
-            title: "Title cannot be empty.",
-        
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
+        .catch((err) => {
+          dispatch({ type: NOTES_POST_ERROR });
+        });
+    } else {
+      toast({
+        title: "Title can't be Empty",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
+
+
   return (
     <Box>
       <Box onClick={onOpen} position="relative">
@@ -118,7 +121,6 @@ const Add_Notes = ({ getNotes }) => {
                 }
               }}
               isDisabled={title.trim() === ""}
-             
             >
               Add
             </Button>

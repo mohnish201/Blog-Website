@@ -30,7 +30,7 @@ const Register = () => {
       username,
     };
     axios
-      .post("http://localhost:4000/users/register", newuser)
+      .post("https://notes-api-hzrj.onrender.com/users/register", newuser)
       .then((res) => {
         if (res.data == "Set Strong Password") {
           setIserror(true);

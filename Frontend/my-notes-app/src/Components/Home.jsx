@@ -2,8 +2,21 @@ import React from "react";
 import { Box, Button, Image } from "@chakra-ui/react";
 import wallpaper from "../assets/wallpaper.jpg";
 import Typewriter from "typewriter-effect";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Home = () => {
+
+  const isAuth = useSelector((store) => store.authReducer.isAuth)
+  const navigate = useNavigate()
+
+  const handleClick=()=>{
+      if(isAuth){
+        navigate("/notes")
+      }
+      else{
+        navigate("/notes")
+      }
+  }
   return (
     <Box
       position={"relative"}
@@ -48,17 +61,18 @@ const Home = () => {
           />
         </Box>
       </Box>
-      <Link to="/notes">
-      <Button
-        position={"relative"}
-        top="150px"
-        left={"600px"}
-        size="sm"
-        colorScheme={"blue"}
+   
+        <Button
+          position={"relative"}
+          top="150px"
+          left={"600px"}
+          size="sm"
+          colorScheme={"blue"}
+          onClick={handleClick}
         >
-        Create Notes
-      </Button>
-        </Link>
+          Create Notes
+        </Button>
+    
     </Box>
   );
 };
