@@ -4,6 +4,7 @@ const bcrpyt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PassCheck } = require("../middleware/validate");
 const { BListModel } = require("../model/blackList");
+const { auth } = require("../middleware/auth");
 const UserRouter = express.Router();
 
 UserRouter.post("/register", PassCheck, async (req, res) => {
@@ -34,6 +35,7 @@ UserRouter.post("/login", async (req, res) => {
 
   try {
     const user = await UserModel.findOne({ email });
+    const username = user.username
     if (user) {
       bcrpyt.compare(pass, user.pass, async (err, result) => {
         if (result) {
@@ -42,7 +44,7 @@ UserRouter.post("/login", async (req, res) => {
             "masai",
             { expiresIn: "2d" }
           );
-          res.send({ msg: "Login Successfull", token });
+          res.send({ msg: "Login Successfull", token, username });
           setTimeout(async () => {
             const Blist = new BListModel({ token });
             await Blist.save();
@@ -59,8 +61,8 @@ UserRouter.post("/login", async (req, res) => {
   }
 });
 
-UserRouter.post("/logout", async (req, res) => {
-  const { token } = req.body;
+UserRouter.post("/logout", auth,async (req, res) => {
+  const { token } = req.headers.authorization?.split(' ')[1]
 
 
   try {
