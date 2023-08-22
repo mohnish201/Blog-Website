@@ -6,6 +6,70 @@ const { PassCheck } = require("../middleware/validate");
 const { BListModel } = require("../model/blackList");
 const { auth } = require("../middleware/auth");
 const UserRouter = express.Router();
+// user routes (GET, POST, PATCH, DELETE) => /routes/User.routes.js
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: "The auto generated id of the user"
+ *         username:
+ *           type: string
+ *           description: "The Username"
+ *         email:
+ *           type: string
+ *           description: "The user email"
+ *         password:
+ *           type: string
+ *           description: "The hashed password"
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Users
+ *     description: All the API routes related to User
+ */
+
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pass:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *             example:
+ *               pass: mypassword
+ *               email: example@example.com
+ *     responses:
+ *       200:
+ *         description: Successful registration
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: New User has been Registered
+ *               user:
+ *                 id: 1234567890
+ *                 username: exampleUser
+ *                 email: example@example.com
+ */
 
 UserRouter.post("/register", PassCheck, async (req, res) => {
   const { pass, email } = req.body;
@@ -30,12 +94,51 @@ UserRouter.post("/register", PassCheck, async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Authenticate and log in a user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               pass:
+ *                 type: string
+ *             example:
+ *               email: example@example.com
+ *               pass: mypassword
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Login Successful
+ *               token: eyJhbGciOiJIUzI1NiIsIn...
+ *               username: exampleUser
+ *       401:
+ *         description: Authentication failed
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Wrong Credentials
+ */
+
 UserRouter.post("/login", async (req, res) => {
   const { email, pass } = req.body;
 
   try {
     const user = await UserModel.findOne({ email });
-    const username = user.username
+    const username = user.username;
     if (user) {
       bcrpyt.compare(pass, user.pass, async (err, result) => {
         if (result) {
@@ -61,23 +164,43 @@ UserRouter.post("/login", async (req, res) => {
   }
 });
 
-UserRouter.post("/logout", auth,async (req, res) => {
-  const { token } = req.headers.authorization?.split(' ')[1]
+/**
+ * @swagger
+ * /users/logout:
+ *   get:
+ *     summary: Log out a user
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful logout
+ *         content:
+ *           text/plain:
+ *             example: Logged out Successfully
+ *       401:
+ *         description: Unauthorized or token not provided
+ *         content:
+ *           text/plain:
+ *             example: Token is undefined
+ */
 
+
+UserRouter.get("/logout", auth, async (req, res) => {
+  const { token } = req.headers.authorization?.split(" ")[1];
 
   try {
-    if(token){
+    if (token) {
       const Blist = new BListModel({ token });
       await Blist.save();
-      res.send('Logged out Successfully')
-    }
-    else{
-      res.send("Token is undefined")
+      res.send("Logged out Successfully");
+    } else {
+      res.send("Token is undefined");
     }
   } catch (error) {
-    res.send(error)
+    res.send(error);
   }
- 
 });
 
 module.exports = {
