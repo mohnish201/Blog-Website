@@ -26,14 +26,14 @@ const Edit_Notes = ({ id, title, body }) => {
   const [Title, setTitle] = useState(title);
   const [Body, setBody] = useState(body);
 //   const notes = useSelector();
-  console.log(id);
+  // console.log(id);
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
   const dispatch = useDispatch();
-  console.log(id);
+  // console.log(id);
 
 
-  console.log(Title, Body)
+  // console.log(Title, Body)
   //    const handleClick = ()=>{
 
   //    }

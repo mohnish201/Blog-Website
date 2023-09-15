@@ -7,6 +7,8 @@ import {
   Image,
   useToast,
   Text,
+  Flex,
+  Skeleton,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -18,6 +20,8 @@ import { store } from "../Redux/store";
 import { getNotes } from "../Redux/notesReducer/action";
 import { NOTES_ERROR, NOTES_FETCHING } from "../Redux/actionTypes";
 import { useNavigate } from "react-router-dom";
+import Notes_Skeleton from "./Notes_Skeleton";
+import NoNotes from "./NoNotes";
 
 const AllNotes = () => {
   const toast = useToast();
@@ -38,17 +42,18 @@ const AllNotes = () => {
   }
 
   if (loading) {
-    return <Heading>Loading...</Heading>;
+    return <Notes_Skeleton/>
   } else if (!notes || notes.length===0) {
-    return <Heading>No Notes are created</Heading>;
+    return <NoNotes/>
   }
 
   return (
     <Box w="100%">
       <Add_Notes getNotes={getNotes} />
 
-      <Grid
-        templateColumns={"repeat(5, 1fr)"}
+      <Flex
+        // templateColumns={"repeat(5, 1fr)"}
+        flexWrap={"wrap"}
         justifyContent="center"
         p="20px"
         boxSizing="border-box"
@@ -58,7 +63,7 @@ const AllNotes = () => {
         {notes.map((el) => (
           <Single_Note key={el._id} {...el} />
         ))}
-      </Grid>
+      </Flex>
     </Box>
   );
 };

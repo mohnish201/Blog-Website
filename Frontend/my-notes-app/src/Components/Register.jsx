@@ -52,7 +52,7 @@ const Register = () => {
           setIserror(false);
           navigate("/login");
         }
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -64,16 +64,30 @@ const Register = () => {
       bgColor={"#B9E9FC"}
       display={"flex"}
       alignItems="center"
-      justifyContent={"space-around"}
+      justifyContent={{
+        base: "space-evenly",
+        sm: "space-evenly",
+        md: "space-evenly",
+        lg: "space-evenly",
+        xl: "space-evenly",
+      }}
     >
-      <Image
+        <Image
         mixBlendMode={"multiply"}
+        display={{
+          base: "none",
+          sm: "none",
+          md: "block",
+          lg: "block",
+          xl: "block",
+        }}
         src="https://i.pinimg.com/564x/40/36/89/403689fe701fedda5ceb6f82c7a88992.jpg"
+        width={{base:"400px", sm:"400px", md:"300px", lg:"500px", xl:"600px"}}
       />
 
       <form onSubmit={handleSignUp}>
         <FormControl
-          w="sm"
+          w="350px"
           boxShadow="rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset"
           bgColor="white"
           p="20px"
@@ -93,7 +107,7 @@ const Register = () => {
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Create Username"
             size={"sm"}
-            w="xs"
+            w="300px"
           />
 
           <FormLabel mt={"20px"} fontSize={"15px"}>
@@ -106,7 +120,7 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Your Email"
             size={"sm"}
-            w="xs"
+            w="300px"
           />
           <FormLabel mt={"20px"} fontSize={"15px"}>
             Create Password
@@ -118,10 +132,10 @@ const Register = () => {
             onChange={(e) => setPass(e.target.value)}
             placeholder="Create Password"
             size={"sm"}
-            w="xs"
+            w="300px"
           />
           {
-            <FormHelperText color={isError ? "red" : "green"}>
+            <FormHelperText color="grey">
               8-character password: 1 letter, 1 digit, 1 uppercase.
             </FormHelperText>
           }

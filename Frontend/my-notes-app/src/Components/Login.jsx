@@ -29,7 +29,6 @@ const Login = () => {
   // const token = useSelector((store) => store.authReducer.token);
   // const isAuth = useSelector((store) => store.authReducer.isAuth);
 
-
   const handleLogin = (e) => {
     e.preventDefault();
     const user = {
@@ -43,7 +42,7 @@ const Login = () => {
           payload: [res.data.token, res.data.username],
         });
         setCookie("token", res.data.token, { path: "/" });
-        console.log(res.data);
+        // console.log(res.data);
 
         res.data.msg == "Login Successfull"
           ? (toast({
@@ -73,22 +72,36 @@ const Login = () => {
 
   return (
     <Box
-     height={"700px"}
+      height={"700px"}
       bgColor={"#B9E9FC"}
       position="fixed"
       display={"flex"}
       w="100%"
       alignItems="center"
-      justifyContent={"space-around"}
+      justifyContent={{
+        base: "space-evenly",
+        sm: "space-evenly",
+        md: "space-evenly",
+        lg: "space-evenly",
+        xl: "space-evenly",
+      }}
     >
       <Image
         mixBlendMode={"multiply"}
+        display={{
+          base: "none",
+          sm: "none",
+          md: "block",
+          lg: "block",
+          xl: "block",
+        }}
         src="https://i.pinimg.com/564x/40/36/89/403689fe701fedda5ceb6f82c7a88992.jpg"
+        width={{base:"400px", sm:"400px", md:"300px", lg:"600px", xl:"600px"}}
       />
 
       <form onSubmit={handleLogin}>
         <FormControl
-          w="sm"
+          w="350px"
           boxShadow="rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset"
           bgColor="white"
           p="20px"
@@ -108,7 +121,7 @@ const Login = () => {
             placeholder="Enter Your Email"
             id="email"
             size={"sm"}
-            w="xs"
+            w="300px"
           />
 
           <FormLabel mt={"20px"} fontSize={"15px"}>
@@ -122,7 +135,7 @@ const Login = () => {
             placeholder="Enter Your Password"
             id="password"
             size={"sm"}
-            w="xs"
+            w="300px"
           />
           <Button
             m="auto"

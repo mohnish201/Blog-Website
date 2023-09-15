@@ -6,7 +6,6 @@ import {
   HStack,
   Input,
   Textarea,
-  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -17,6 +16,7 @@ import {
   useDisclosure,
   FormControl,
   Image,
+  useToast 
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
@@ -49,6 +49,8 @@ const Single_Note = ({ title, _id, body }) => {
   const dispatch = useDispatch();
   const notes = useSelector((store) => store.notesReducer.notes);
 
+  const toast = useToast()
+
   useEffect(() => {
     const editData = notes.find((el) => el._id === _id);
     setUpdatedData(editData || initState);
@@ -66,15 +68,27 @@ const Single_Note = ({ title, _id, body }) => {
   const handleSubmit = (id) => {
     dispatch(EditNotes(id, updatedData, token))
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         dispatch({ type: NOTES_PATCH_SUCCESS });
-        alert("Data edited");
+        // alert("Data edited");
+        toast({
+          title: 'Note Edited.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
         dispatch(getNotes(token));
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         dispatch({ type: NOTES_PATCH_ERROR });
-        alert("Request Failed");
+        // alert("Request Failed");
+        toast({
+          title: 'Request Failed.',
+          status: 'Error',
+          duration: 5000,
+          isClosable: true,
+        })
       });
   };
 
@@ -82,14 +96,26 @@ const Single_Note = ({ title, _id, body }) => {
     dispatch(DeleteNotes(token, id))
       .then((res) => {
         dispatch({ type: NOTES_DELETE_SUCCESS });
-        alert("Data deleted");
+        // alert("Data deleted");
+        toast({
+          title: 'Note Deleted.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        })
         dispatch(getNotes(token))
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((err) => {
         dispatch({ type: NOTES_DELETE_ERROR });
-        console.log(err);
-        alert("Request failed");
+        // console.log(err);
+        // alert("Request failed");
+        toast({
+          title: 'Request Failed.',
+          status: 'Error',
+          duration: 5000,
+          isClosable: true,
+        })
       });
   };
   const getRandomColor = () => {

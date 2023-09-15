@@ -11,11 +11,11 @@ export const getNotes = (token) => (dispatch) => {
     })
     .then((res) => {
       dispatch({ type: NOTES_FETCHING, payload: res.data});
-      console.log(res.data);
+      // console.log(res.data);
     })
     .catch((err) => {
       dispatch({ type: NOTES_ERROR });
-      console.log(err);
+      // console.log(err);
     });
 };
 

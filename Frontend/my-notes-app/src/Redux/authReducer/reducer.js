@@ -21,7 +21,7 @@ export const reducer = (state = initState, { type, payload }) => {
       };
 
     case AUTH_SUCCESS:
-      console.log(payload)
+      // console.log(payload)
       return {
         ...state,
         loading: false,

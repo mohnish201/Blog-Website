@@ -39,7 +39,6 @@ const Add_Notes = ({ getNotes }) => {
   const toast = useToast();
   const token = document.cookie?.split("=")[1];
 
-
   const addNotes = () => {
     const newNote = {
       title,
@@ -48,7 +47,7 @@ const Add_Notes = ({ getNotes }) => {
     if (title) {
       dispatch(createNotes(newNote))
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           dispatch({ type: NOTES_POST_SUCCESS });
           toast({
             title: "Note Created.",
@@ -58,7 +57,7 @@ const Add_Notes = ({ getNotes }) => {
             isClosable: true,
           });
 
-          dispatch(getNotes(token))
+          dispatch(getNotes(token));
         })
         .catch((err) => {
           dispatch({ type: NOTES_POST_ERROR });
@@ -73,12 +72,19 @@ const Add_Notes = ({ getNotes }) => {
     }
   };
 
-
   return (
     <Box>
       <Box onClick={onOpen} position="relative">
         {" "}
-        <Image position={"fixed"} top="80%" left="90%" src={add} width="60px" />
+        <Image
+          position={"fixed"}
+          top="80%"
+          left={{ base: "85%", sm: "85%", md: "90%", lg: "90%", xl: "90%" }}
+          src={add}
+          width="60px"
+          cursor={"pointer"}
+          title="Add Notes"
+        />
       </Box>
 
       <Modal

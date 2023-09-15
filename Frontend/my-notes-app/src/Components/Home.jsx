@@ -64,7 +64,7 @@ const Home = () => {
         </Box>
         <Button
           top="300px"
-          left={{base:"150px", sm:"300px", md:"500px", lg:"650px", xl:"750px"}}
+          left={{base:"150px", sm:"300px", md:"350px", lg:"500px", xl:"750px"}}
           size="sm"
           colorScheme={"blue"}
           onClick={handleClick}
