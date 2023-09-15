@@ -13,3 +13,20 @@ The Keep My-Notes Platform simplifies the task of creating and managing personal
 ## Preview
 
 - Homepage
+<img src="./Frontend/my-notes-app/src/assets/homepage.png" />
+
+- Login
+<img src="./Frontend/my-notes-app/src/assets/login.png" />
+
+- Register
+<img src="./Frontend/my-notes-app/src/assets/register.png" />
+
+- Notes
+<img src="./Frontend/my-notes-app/src/assets/notes.png" />
+
+------------------------------------------------------------------------------------------
+- Developed by **Mohnish Vishwakarma**
+- Contact : -mohnish201@gmail.com
+
+
+
