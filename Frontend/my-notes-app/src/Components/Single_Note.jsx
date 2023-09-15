@@ -139,7 +139,7 @@ const Single_Note = ({ title, _id, body }) => {
           top="-10x"
         >
           <FiEdit onClick={onOpen} cursor="pointer" />
-          <MdDelete onClick={() => handleDelete(_id)} color="red" size="20px" />
+          <MdDelete cursor="pointer" onClick={() => handleDelete(_id)} color="red" size="20px" />
         </HStack>
       )}
 

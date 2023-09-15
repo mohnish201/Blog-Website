@@ -10,7 +10,7 @@ import {
   FormHelperText,
   Text,
   FormLabel,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,8 +20,8 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [isError, setIserror] = useState(true);
 
-  const navigate= useNavigate()
- const toast = useToast()
+  const navigate = useNavigate();
+  const toast = useToast();
   const handleSignUp = (e) => {
     e.preventDefault();
     const newuser = {
@@ -34,24 +34,23 @@ const Register = () => {
       .then((res) => {
         if (res.data == "Set Strong Password") {
           setIserror(true);
-        } else if(res.data =="Already have Account"){
+        } else if (res.data == "Already have Account") {
           toast({
-            title: 'Already have hccount',
-            status: 'error',
+            title: "Already have hccount",
+            status: "error",
             duration: 5000,
             isClosable: true,
-          })
-        }
-        else {
+          });
+        } else {
           toast({
-            title: 'Account created.',
+            title: "Account created.",
             description: "We've created your account for you.",
-            status: 'success',
+            status: "success",
             duration: 5000,
             isClosable: true,
-          })
+          });
           setIserror(false);
-          navigate("/login")
+          navigate("/login");
         }
         console.log(res.data);
       })
@@ -59,7 +58,9 @@ const Register = () => {
   };
   return (
     <Box
-      height={"539px"}
+      height={"700px"}
+      position="fixed"
+      width={"100%"}
       bgColor={"#B9E9FC"}
       display={"flex"}
       alignItems="center"
@@ -121,10 +122,16 @@ const Register = () => {
           />
           {
             <FormHelperText color={isError ? "red" : "green"}>
-              Password Should be Strong
+              8-character password: 1 letter, 1 digit, 1 uppercase.
             </FormHelperText>
           }
-          <Button m="auto" display={"block"} mt={"20px"} type="submit" colorScheme={"messenger"}>
+          <Button
+            m="auto"
+            display={"block"}
+            mt={"20px"}
+            type="submit"
+            colorScheme={"messenger"}
+          >
             Register
           </Button>
         </FormControl>

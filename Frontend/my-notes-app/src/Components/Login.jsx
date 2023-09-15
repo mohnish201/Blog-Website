@@ -29,6 +29,7 @@ const Login = () => {
   // const token = useSelector((store) => store.authReducer.token);
   // const isAuth = useSelector((store) => store.authReducer.isAuth);
 
+
   const handleLogin = (e) => {
     e.preventDefault();
     const user = {
@@ -72,9 +73,11 @@ const Login = () => {
 
   return (
     <Box
-      height={"539px"}
+     height={"700px"}
       bgColor={"#B9E9FC"}
+      position="fixed"
       display={"flex"}
+      w="100%"
       alignItems="center"
       justifyContent={"space-around"}
     >

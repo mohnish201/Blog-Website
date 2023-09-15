@@ -7,9 +7,11 @@ export const login = (user) => (dispatch) => {
 };
 
 export const logout = (token) => (dispatch) => {
-  return axios.post("https://notes-api-hzrj.onrender.com/users/logout", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // return axios.post("https://notes-api-hzrj.onrender.com/users/logout", {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // });
+
+  dispatch({ type: LOGOUT });
 };

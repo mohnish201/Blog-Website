@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, Button, Image, HStack, Heading } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,13 +20,17 @@ const Navbar = () => {
     let token = document.cookie?.split("=")[1];
 
     dispatch(logout(token))
-      .then((res) => {
-        console.log(res.data);
-        dispatch({ type: LOGOUT });
-        navigate("/login");
-        setCookie("token", "", { path: "/" });
-      })
-      .catch((err) => console.log(err));
+    navigate("/login")
+
+    // dispatch(logout(token))
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     dispatch({ type: LOGOUT });
+    //     navigate("/login");
+    //     setCookie("token", "", { path: "/" });
+    //   })
+    //   .catch((err) => console.log(err));
+
   };
 
   return (
