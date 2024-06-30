@@ -143,23 +143,16 @@ UserRouter.post("/login", async (req, res) => {
       bcrpyt.compare(pass, user.pass, async (err, result) => {
         if (result) {
           const token = jwt.sign(
-            { userId: user._id, user: user.username },
-            "masai",
-            { expiresIn: "2d" }
-          );
+            { userId: user._id, user: user.username }, "masai");
           res.send({ msg: "Login Successfull", token, username });
-          setTimeout(async () => {
-            const Blist = new BListModel({ token });
-            await Blist.save();
-          }, 1000 * 60 * 10);
-        } else {
-          res.send({ msg: "Wrong Credentials" });
         }
       });
-    } else {
+    }
+    else {
       res.send({ msg: "Wrong Credentials" });
     }
   } catch (error) {
+    console.log(error)
     res.send(error);
   }
 });

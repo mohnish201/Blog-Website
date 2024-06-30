@@ -2,23 +2,32 @@ const jwt = require("jsonwebtoken");
 const { BListModel } = require("../model/blackList");
 
 const auth = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers.authorization;
 
-  const bLlist = await BListModel.findOne({ token });
-
-  if (!bLlist) {
-    jwt.verify(token, "masai", (err, decoded) => {
-      if (decoded) {
-        req.body.userId = decoded.userId;
-        req.body.user = decoded.user;
-        next();
-      } else {
-        res.send("UnAuthorized");
-      }
-    });
-  } else {
-    res.send("Login First!");
+  if (!authHeader) {
+    return res.status(401).send("Login First!");
   }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).send("Token not found!");
+  }
+
+  jwt.verify(token, "masai", (err, decoded) => {
+    if (err) {
+      console.error("Token verification error:", err);
+      return res.status(401).send("UnAuthorized");
+    }
+
+    if (decoded) {
+      req.body.userId = decoded.userId;
+      req.body.user = decoded.user;
+      next();
+    } else {
+      res.status(401).send("UnAuthorized");
+    }
+  });
 };
 
 module.exports = {
