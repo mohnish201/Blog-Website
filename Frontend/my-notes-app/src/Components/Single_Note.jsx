@@ -16,7 +16,7 @@ import {
   useDisclosure,
   FormControl,
   Image,
-  useToast 
+  useToast
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
@@ -66,7 +66,7 @@ const Single_Note = ({ title, _id, body }) => {
   };
 
   const handleSubmit = (id) => {
-    dispatch(EditNotes(id, updatedData, token))
+    dispatch(EditNotes(id, updatedData))
       .then((res) => {
         // console.log(res.data);
         dispatch({ type: NOTES_PATCH_SUCCESS });
@@ -77,7 +77,7 @@ const Single_Note = ({ title, _id, body }) => {
           duration: 5000,
           isClosable: true,
         })
-        dispatch(getNotes(token));
+        dispatch(getNotes());
       })
       .catch((err) => {
         // console.log(err);
@@ -93,7 +93,7 @@ const Single_Note = ({ title, _id, body }) => {
   };
 
   const handleDelete = (id) => {
-    dispatch(DeleteNotes(token, id))
+    dispatch(DeleteNotes(id))
       .then((res) => {
         dispatch({ type: NOTES_DELETE_SUCCESS });
         // alert("Data deleted");

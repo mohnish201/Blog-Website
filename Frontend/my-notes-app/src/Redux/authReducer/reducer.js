@@ -5,7 +5,7 @@ const initState = {
   loading: false,
   error: false,
   token: "",
-  username:""
+  username: ""
 
 };
 
@@ -28,7 +28,7 @@ export const reducer = (state = initState, { type, payload }) => {
         isAuth: true,
         error: false,
         token: payload[0],
-        username:payload[1]
+        username: payload[1]
       };
 
     case AUTH_ERROR:
@@ -39,15 +39,6 @@ export const reducer = (state = initState, { type, payload }) => {
         error: true,
         token: "",
       };
-
-      case LOGOUT:
-        return {
-            ...state,
-            loading: false,
-            isAuth: false,
-            error: true,
-            token: "",
-          };
     default:
       return state
   }

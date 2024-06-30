@@ -12,49 +12,56 @@ import {
   FormLabel,
   useToast,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [username, setUsername] = useState("");
   const [isError, setIserror] = useState(true);
+  const [loading, setLoading] = useState(false)
+  console.log(import.meta.env.VITE_SERVER)
 
   const navigate = useNavigate();
   const toast = useToast();
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     const newuser = {
       email,
       pass,
       username,
     };
-    axios
-      .post("https://notes-api-hzrj.onrender.com/users/register", newuser)
-      .then((res) => {
-        if (res.data == "Set Strong Password") {
-          setIserror(true);
-        } else if (res.data == "Already have Account") {
-          toast({
-            title: "Already have hccount",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        } else {
-          toast({
-            title: "Account created.",
-            description: "We've created your account for you.",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
-          setIserror(false);
-          navigate("/login");
-        }
-        // console.log(res.data);
-      })
-      .catch((err) => console.log(err));
+    setLoading(true)
+
+    try {
+      let { data } = await axios.post(`${import.meta.env.VITE_SERVER}/users/register`, newuser);
+      if (data === "Set Strong Password") {
+        setIserror(true);
+      }
+      else if (data === "Already have Account") {
+        toast({
+          title: "Already have hccount",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      else {
+        toast({
+          title: "Account created.",
+          description: "We've created your account for you.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setIserror(false);
+        navigate("/login");
+      }
+    } catch (error) {
+
+    }
+    setLoading(false)
+
   };
   return (
     <Box
@@ -72,7 +79,7 @@ const Register = () => {
         xl: "space-evenly",
       }}
     >
-        <Image
+      <Image
         mixBlendMode={"multiply"}
         display={{
           base: "none",
@@ -82,7 +89,7 @@ const Register = () => {
           xl: "block",
         }}
         src="https://i.pinimg.com/564x/40/36/89/403689fe701fedda5ceb6f82c7a88992.jpg"
-        width={{base:"400px", sm:"400px", md:"300px", lg:"500px", xl:"600px"}}
+        width={{ base: "400px", sm: "400px", md: "300px", lg: "500px", xl: "600px" }}
       />
 
       <form onSubmit={handleSignUp}>
@@ -104,6 +111,7 @@ const Register = () => {
             type="text"
             value={username}
             variant="filled"
+            required
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Create Username"
             size={"sm"}
@@ -117,6 +125,7 @@ const Register = () => {
             type="email"
             value={email}
             variant="filled"
+            required
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Your Email"
             size={"sm"}
@@ -129,6 +138,7 @@ const Register = () => {
             type="password"
             value={pass}
             variant="filled"
+            required
             onChange={(e) => setPass(e.target.value)}
             placeholder="Create Password"
             size={"sm"}
@@ -139,9 +149,13 @@ const Register = () => {
               8-character password: 1 letter, 1 digit, 1 uppercase.
             </FormHelperText>
           }
+
+          <p style={{ marginTop: "10px" }}>Already have account? <Link to={"/login"} style={{ color: "blue", fontWeight: "500" }}>Login</Link> </p>
           <Button
             m="auto"
             display={"block"}
+            disabled={loading}
+            isLoading={loading}
             mt={"20px"}
             type="submit"
             colorScheme={"messenger"}

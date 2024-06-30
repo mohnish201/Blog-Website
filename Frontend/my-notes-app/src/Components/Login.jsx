@@ -10,24 +10,19 @@ import {
   FormLabel,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { store } from "../Redux/store";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { login } from "../Redux/authReducer/action";
 import { AUTH_ERROR, AUTH_SUCCESS } from "../Redux/actionTypes";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const [cookies, setCookie] = useCookies("token");
   const toast = useToast();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  // const token = useSelector((store) => store.authReducer.token);
-  // const isAuth = useSelector((store) => store.authReducer.isAuth);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -35,31 +30,26 @@ const Login = () => {
       email,
       pass,
     };
+
     dispatch(login(user))
       .then((res) => {
-        dispatch({
-          type: AUTH_SUCCESS,
-          payload: [res.data.token, res.data.username],
-        });
-        setCookie("token", res.data.token, { path: "/" });
-        // console.log(res.data);
-
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem("username", res.data.username)
         res.data.msg == "Login Successfull"
           ? (toast({
-              title: "Login Successfull.",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            }),
+            title: "Login Successfull.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          }),
             navigate("/notes"))
           : toast({
-              title: "Wrong Credentials.",
-              status: "error",
-              duration: 9000,
-              isClosable: true,
-            });
-      })
-      .catch((err) => {
+            title: "Wrong Credentials.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+      }).catch((err) => {
         dispatch({ type: AUTH_ERROR });
         toast({
           title: "Wrong Credentials.",
@@ -96,7 +86,7 @@ const Login = () => {
           xl: "block",
         }}
         src="https://i.pinimg.com/564x/40/36/89/403689fe701fedda5ceb6f82c7a88992.jpg"
-        width={{base:"400px", sm:"400px", md:"300px", lg:"600px", xl:"600px"}}
+        width={{ base: "400px", sm: "400px", md: "300px", lg: "600px", xl: "600px" }}
       />
 
       <form onSubmit={handleLogin}>
@@ -137,6 +127,8 @@ const Login = () => {
             size={"sm"}
             w="300px"
           />
+          <p style={{ marginTop: "10px" }}>Create new account <Link to={"/register"} style={{ color: "blue", fontWeight: "500" }}>Register</Link> </p>
+
           <Button
             m="auto"
             display={"block"}

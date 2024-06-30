@@ -37,7 +37,6 @@ const Add_Notes = ({ getNotes }) => {
   const finalRef = React.useRef(null);
 
   const toast = useToast();
-  const token = document.cookie?.split("=")[1];
 
   const addNotes = () => {
     const newNote = {
@@ -47,7 +46,6 @@ const Add_Notes = ({ getNotes }) => {
     if (title) {
       dispatch(createNotes(newNote))
         .then((res) => {
-          // console.log(res.data);
           dispatch({ type: NOTES_POST_SUCCESS });
           toast({
             title: "Note Created.",
@@ -57,7 +55,7 @@ const Add_Notes = ({ getNotes }) => {
             isClosable: true,
           });
 
-          dispatch(getNotes(token));
+          dispatch(getNotes());
         })
         .catch((err) => {
           dispatch({ type: NOTES_POST_ERROR });

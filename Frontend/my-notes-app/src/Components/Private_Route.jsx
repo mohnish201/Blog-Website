@@ -2,13 +2,13 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom';
 
-const Private_Route = ({children}) => {
+const Private_Route = ({ children }) => {
 
-    const isAuth = useSelector((store) => store.authReducer.isAuth);
+  const isAuth = localStorage.getItem("token")
 
-    if(!isAuth){
-        return <Navigate to='/login' />
-    }
+  if (!isAuth) {
+    return <Navigate to='/login' />
+  }
   return children
 }
 

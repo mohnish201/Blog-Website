@@ -1,36 +1,15 @@
 import React, { useEffect } from "react";
 import { Box, Button, Image, HStack, Heading } from "@chakra-ui/react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useCookies } from "react-cookie";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../Redux/authReducer/action";
-import { LOGOUT } from "../Redux/actionTypes";
+import { useSelector } from "react-redux";
 const Navbar = () => {
-  const [cookie, setCookie] = useCookies("token");
   const navigate = useNavigate();
-  const isAuth = useSelector((store) => store.authReducer.isAuth);
-  const username = useSelector((store) => store.authReducer.username);
-
- 
-
-  const dispatch = useDispatch();
+  const isAuth = localStorage.getItem("token")
+  const username = localStorage.getItem("username")
 
   const handleLogout = () => {
-    let token = document.cookie?.split("=")[1];
-
-    dispatch(logout(token))
+    localStorage.removeItem("token");
     navigate("/login")
-
-    // dispatch(logout(token))
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     dispatch({ type: LOGOUT });
-    //     navigate("/login");
-    //     setCookie("token", "", { path: "/" });
-    //   })
-    //   .catch((err) => console.log(err));
-
   };
 
   return (

@@ -24,27 +24,27 @@ import Notes_Skeleton from "./Notes_Skeleton";
 import NoNotes from "./NoNotes";
 
 const AllNotes = () => {
-  const toast = useToast();
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  const notes = useSelector((store) => store.notesReducer.notes);
-  const isAuth = useSelector((store) => store.authReducer.isAuth);
-  const loading = useSelector((store) => store.notesReducer.loading);
-
-  const token = document.cookie?.split("=")[1];
-  useEffect(() => {
-    dispatch(getNotes(token));
-  }, []);
+  const isAuth = localStorage.getItem("token")
 
   if (!isAuth) {
     return navigate("/login");
   }
 
+  const dispatch = useDispatch();
+  const notes = useSelector((store) => store.notesReducer.notes);
+  const loading = useSelector((store) => store.notesReducer.loading);
+  useEffect(() => {
+    dispatch(getNotes());
+  }, []);
+
+
+
   if (loading) {
-    return <Notes_Skeleton/>
-  } else if (!notes || notes.length===0) {
-    return <NoNotes/>
+    return <Notes_Skeleton />
+  } else if (!notes || notes.length === 0) {
+    return <NoNotes />
   }
 
   return (
@@ -60,7 +60,7 @@ const AllNotes = () => {
         alignItems={"flex-start"}
         gap="20px"
       >
-        {notes.map((el) => (
+        {notes?.map((el) => (
           <Single_Note key={el._id} {...el} />
         ))}
       </Flex>
